@@ -25,9 +25,10 @@ export async function sign_up(req,res){
 }
 
 export async function sign_in(req,res) {
-    const {id,email,password} = res.locals.userRegistered
+    const id = res.locals.userRegistered
     const tokenExists = res.locals.tokenExists
     const token = uuidV4();
+    
 
     try {
 

@@ -41,7 +41,7 @@ export async function signInValidation(req, res, next) {
   if (!email || !password)
     return res.status(422).send("All fields (email and password) are required");
 
-  const { error } = signInValidation.validate(
+  const { error } = signInSchema.validate(
     { email, password },
     { abortEarly: false }
   );
@@ -59,24 +59,39 @@ export async function signInValidation(req, res, next) {
       [email]
     );
 
-    if(userRegistered.rowCount == 0) return res.status(401).send("User not found");
+    console.log(userRegistered.rows[0].id)
+
+    if (userRegistered.rowCount == 0)
+      return res.status(401).send("User not found");
 
     const checkPassword = bcrypt.compareSync(
       password,
       userRegistered.rows[0].password
     );
 
-    if ( !checkPassword  )
-      return res.status(401).send("Incorrect Password");
+    if (!checkPassword) return res.status(401).send("Incorrect Password");
 
-    if(userRegistered && checkPassword){
-
-
-    }else {return res.status(422).send("User not registered or Invalid UserName or Invalid Password")}
-
-    res.locals.userRegistered = userRegistered.rows[0]
+    if (userRegistered && checkPassword) {
+      const tokenExists = await db.query(
+        `
+        SELECT * FROM sessions
+        WHERE user_id=$1`,
+        [userRegistered.rows[0].id]
+      );
+        
+      if (tokenExists) {
+        res.locals.tokenExists = tokenExists.rows[0];
+      }
+    } else {
+      return res
+        .status(422)
+        .send("User not registered or Invalid UserName or Invalid Password");
+    }
+    
+    res.locals.userRegistered = userRegistered.rows[0].id;
   } catch (error) {
     console.error(error);
     res.status(500).send("Houve um problema no servidor");
   }
+  next();
 }
