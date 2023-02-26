@@ -21,3 +21,5 @@ urlRouter.post("/urls/shorten",checkSessionValidation,createShortUrlValidation,c
 urlRouter.get("/urls/:id",showUrlsByIdValidation,showUrlsById)
 urlRouter.get("/urls/open/:shortUrl",showShortUrlValidation,showShortUrl)
 urlRouter.delete("/urls/:id",checkSessionValidation,deleteUrlsByIdValidation,deleteUrlsById)
+
+export default urlRouter

@@ -10,9 +10,11 @@ export async function sign_up(req,res){
 
     try {
         
-        await db.query(`
+        await db.query(
+            `
         INSERT INTO users (name,email,password)
-        VALUES ($1,$2,$3);`,
+        VALUES ($1,$2,$3);
+        `,
         [name,email,hashed_password]
         )
 
@@ -33,17 +35,22 @@ export async function sign_in(req,res) {
     try {
 
         if(tokenExists){
-            await db.query(`
+            await db.query(
+            `
             UPDATE sessions 
-            SET token=$1 WHERE user_id=$2;`,
+            SET token=$1 
+            WHERE user_id=$2;
+            `,
             [token,id])
 
         return res.status(200).send({token})
 
         }else {
-            await db.query(`
+            await db.query(
+                `
             INSERT INTO sessions (user_id,token)
-            VALUES ($1,$2)`,
+            VALUES ($1,$2)
+            `,
             [id,token])
 
         return res.status(200).send({token})
