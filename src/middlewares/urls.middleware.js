@@ -26,7 +26,7 @@ export async function showUrlsByIdValidation(req, res, next) {
   const { id } = req.params;
 
   try {
-    const checkShortUrlById = db.query(
+    const checkShortUrlById = await db.query(
       `
       SELECT id,"shortUrl",url
       FROM urls
@@ -47,9 +47,41 @@ export async function showUrlsByIdValidation(req, res, next) {
   next();
 }
 
-export async function showShortUrlValidation() {}
+export async function showShortUrlValidation(res,req,next) {
+    const {shortUrl} = req.params
 
-export async function deleteUrlsByIdValidation(req, res) {
+    try {
+        const data = await db.query(
+        `
+        SELECT * FROM urls
+        WHERE "shortUrl" = $1
+        `,
+        [shortUrl]);
+
+    if(data.rowCount == 0 ) return res.status(404).send("Url not found")
+
+    await db.query(
+    `
+    UPDATE urls
+    SET "visitCount" = "visitCount" + 1
+    WHERE "shortUrl" = $1
+    `,
+    [shortUrl])
+    
+    const urlFound = data.rows[0].url
+    
+    res.locals.urlFound = urlFound
+
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+   
+    next()
+}
+
+export async function deleteUrlsByIdValidation(req, res,next) {
   const { userId } = res.locals.session;
   const { id } = req.params;
+
+  next()
 }

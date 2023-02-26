@@ -35,6 +35,11 @@ export async function showUrlsById(req, res) {
   return res.status(200).send(resultUrlObjectFound);
 }
 
-export async function showShortUrl(req, res) {}
+export async function showShortUrl(req, res) {
+     const urlFound = res.locals.urlFound
+
+     return res.redirect(urlFound)
+
+}
 
 export async function deleteUrlsById(req, res) {}
