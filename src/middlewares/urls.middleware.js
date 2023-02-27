@@ -69,7 +69,7 @@ export async function showShortUrlValidation(res,req,next) {
     [shortUrl])
     
     const urlFound = data.rows[0].url
-    
+
     res.locals.urlFound = urlFound
 
     } catch (error) {
@@ -80,8 +80,32 @@ export async function showShortUrlValidation(res,req,next) {
 }
 
 export async function deleteUrlsByIdValidation(req, res,next) {
-  const { userId } = res.locals.session;
+  const { user_id } = res.locals.session;
   const { id } = req.params;
 
+  try {
+    
+    const checkShortUrlById = await db.query(
+    `
+        SELECT *
+        FROM urls
+        WHERE id=$1
+    `,
+      [id]
+    );
+  
+    if (checkShortUrlById.rowCount == 0 )return res.status(404).send("Shorten Url not found");
+
+    const urlObjectFound = checkShortUrlById.rows[0]
+
+    const urlFoundBelongsToUser = (user_id == urlObjectFound.user_id)
+
+    if(!urlFoundBelongsToUser) return res.status(401).send("You don't have permission to delete")
+
+    res.locals.UrlId = urlObjectFound.id
+
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
   next()
 }

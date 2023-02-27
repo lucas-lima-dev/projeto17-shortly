@@ -42,4 +42,18 @@ export async function showShortUrl(req, res) {
 
 }
 
-export async function deleteUrlsById(req, res) {}
+export async function deleteUrlsById(req, res) {
+    const id = res.locals.UrlId
+
+    try {
+        await db.query(
+        `
+        DELETE FROM urls
+        WHERE id = $1;
+        `,
+        [id])
+        return res.sendStatus(404)
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
