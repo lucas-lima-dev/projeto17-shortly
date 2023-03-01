@@ -84,6 +84,8 @@ export async function showShortUrlValidation(req,res,next) {
 export async function deleteUrlsByIdValidation(req, res,next) {
   const { user_id } = res.locals.session;
   const { id } = req.params;
+  console.log(user_id)
+  console.log(id)
 
   try {
     
