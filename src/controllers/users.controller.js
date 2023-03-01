@@ -1,6 +1,6 @@
-import db from "../configs/database";
+import db from "../configs/database.js";
 
-export async function listUsers(req,res) {
+export async function showMyUrls(req,res) {
     try {
         
     } catch (error) {

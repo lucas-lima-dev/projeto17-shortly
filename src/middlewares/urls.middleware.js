@@ -5,10 +5,11 @@ import { createShortUrlSchema } from "../schemas/urls.schema.js";
 export async function createShortUrlValidation(req, res, next) {
   const { url } = req.body;
   const { user_id } = res.locals.session;
+  
 
   if (!url) return res.status(422).send("URL is required");
 
-  const { error } = createShortUrlSchema.validate(url);
+  const { error } = createShortUrlSchema.validate({url:url});
 
   if (error) {
     const errorMessages = error.details.map((detail) => detail.message);
