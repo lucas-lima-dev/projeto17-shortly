@@ -48,8 +48,9 @@ export async function showUrlsByIdValidation(req, res, next) {
   next();
 }
 
-export async function showShortUrlValidation(res,req,next) {
-    const {shortUrl} = req.params
+export async function showShortUrlValidation(req,res,next) {
+  
+    const shortUrl = req.params.shortUrl
 
     try {
         const data = await db.query(
