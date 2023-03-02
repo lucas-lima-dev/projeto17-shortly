@@ -84,8 +84,7 @@ export async function showShortUrlValidation(req,res,next) {
 export async function deleteUrlsByIdValidation(req, res,next) {
   const { user_id } = res.locals.session;
   const { id } = req.params;
-  console.log(user_id)
-  console.log(id)
+  
 
   try {
     
@@ -97,6 +96,8 @@ export async function deleteUrlsByIdValidation(req, res,next) {
     `,
       [id]
     );
+
+    console.log(checkShortUrlById.rows[0])
   
     if (checkShortUrlById.rowCount == 0 )return res.status(404).send("Shorten Url not found");
 
@@ -108,8 +109,8 @@ export async function deleteUrlsByIdValidation(req, res,next) {
 
     res.locals.UrlId = urlObjectFound.id
 
+    next()
   } catch (error) {
     res.status(500).send(error.message);
   }
-  next()
 }

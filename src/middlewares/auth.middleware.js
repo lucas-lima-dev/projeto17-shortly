@@ -5,6 +5,11 @@ import bcrypt from "bcrypt";
 export async function signUpValidation(req, res, next) {
   const { name, email, password, confirmPassword } = req.body;
 
+  if (password !== confirmPassword)
+    return res
+      .status(422)
+      .send("Fields password and confirmPassword must be identical");
+
   if (!name || !email || !password || !confirmPassword) {
     return res
       .status(422)
@@ -59,7 +64,7 @@ export async function signInValidation(req, res, next) {
       [email]
     );
 
-    console.log(userRegistered.rows[0].id)
+    
 
     if (userRegistered.rowCount == 0)
       return res.status(401).send("User not found");
@@ -78,7 +83,7 @@ export async function signInValidation(req, res, next) {
         WHERE user_id=$1`,
         [userRegistered.rows[0].id]
       );
-        
+
       if (tokenExists) {
         res.locals.tokenExists = tokenExists.rows[0];
       }
@@ -87,7 +92,7 @@ export async function signInValidation(req, res, next) {
         .status(422)
         .send("User not registered or Invalid UserName or Invalid Password");
     }
-    
+
     res.locals.userRegistered = userRegistered.rows[0].id;
   } catch (error) {
     console.error(error);
@@ -95,5 +100,3 @@ export async function signInValidation(req, res, next) {
   }
   next();
 }
-
-

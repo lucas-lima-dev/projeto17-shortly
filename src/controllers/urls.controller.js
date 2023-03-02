@@ -52,7 +52,7 @@ export async function deleteUrlsById(req, res) {
         WHERE id = $1;
         `,
         [id])
-        return res.sendStatus(404)
+        return res.sendStatus(204)
     } catch (error) {
         res.status(500).send(error.message);
     }
