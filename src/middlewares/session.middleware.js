@@ -4,6 +4,8 @@ export async function checkSessionValidation(req,res,next) {
     const {authorization} = req.headers;
     const token = authorization?.replace("Bearer ","")
 
+    
+
     if(!token) return res.status(401).send("Token is required")
 
     try {
@@ -14,6 +16,7 @@ export async function checkSessionValidation(req,res,next) {
 
         if(checkSession.rowCount == 0 ) return res.status(401).send("You don't have permission") 
 
+        
         res.locals.session = checkSession.rows[0];
         
     } catch (error) {
