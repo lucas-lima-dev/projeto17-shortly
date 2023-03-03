@@ -25,8 +25,6 @@ export async function usersValidation(req,res,next) {
             GROUP BY users.id;
             `,[user_id]);
 
-        
-
         const existsUrls = currentUserUrls.rowCount
         if(existsUrls == 0 ) return res.status(404).send("No urls found")
 
